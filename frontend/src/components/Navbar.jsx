@@ -28,7 +28,7 @@ export default function Navbar() {
           <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
         </NavLink>
 
-        <NavLink to='/collection' className='flex flex-col items-center gap-1'>
+        <NavLink to='/customize' className='flex flex-col items-center gap-1'>
           <p>КОНСТРУКТОР</p>
           <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
         </NavLink>

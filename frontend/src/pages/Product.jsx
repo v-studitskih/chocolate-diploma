@@ -77,7 +77,7 @@ export default function Product() {
   localStorage.setItem("preselectedOptions", JSON.stringify(preselectedOptions));
   
   toast.success(`Опция "${productData.name}" добавлена в конструктор`);
-  navigate("/collection");
+  navigate("/customize");
 };
 
   if (!productData) {
