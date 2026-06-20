@@ -7,7 +7,8 @@ const __dirname = path.dirname(__filename);
 
 const connectDB = async () => {
     try {
-        const certPath = path.join(__dirname, 'root.crt');
+        // Просто заменяем путь к сертификату на абсолютный
+        const certPath = path.join(__dirname, '..', 'root.crt');
         const mongoUrl = process.env.MONGODB_URL.replace(
             'tlsCAFile=./root.crt',
             `tlsCAFile=${certPath}`
