@@ -1,6 +1,5 @@
 import productModel from "../models/productModel.js";
 
-// function for add product
 const addProduct = async (req, res) => {
   try {
     const {
@@ -49,7 +48,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-// function for list products
 const listProducts = async (req, res) => {
   try {
     const products = await productModel.find({});
@@ -61,7 +59,6 @@ const listProducts = async (req, res) => {
   }
 };
 
-// function for removing product
 const removeProduct = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -74,7 +71,6 @@ const removeProduct = async (req, res) => {
   }
 };
 
-// function for single product info
 const singleProduct = async (req, res) => {
   try {
     const { productId } = req.params;

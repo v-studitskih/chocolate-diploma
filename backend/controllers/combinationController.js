@@ -1,6 +1,5 @@
 import popularCombinationModel from "../models/popularCombinationModel.js";
 
-// add combination
 const addCombination = async (req, res) => {
   try {
     const imageFile = req.files?.image?.[0];
@@ -35,7 +34,6 @@ const addCombination = async (req, res) => {
   }
 };
 
-// list combinations
 const listCombinations = async (req, res) => {
   try {
     const combinations = await popularCombinationModel.find({ isActive: true });
@@ -46,7 +44,6 @@ const listCombinations = async (req, res) => {
   }
 };
 
-// single combination
 const singleCombination = async (req, res) => {
   try {
     const { combinationId } = req.params;
@@ -58,10 +55,9 @@ const singleCombination = async (req, res) => {
   }
 };
 
-// remove combination
 const removeCombination = async (req, res) => {
   try {
-     const { combinationId } = req.params;  
+    const { combinationId } = req.params;
     await popularCombinationModel.findByIdAndDelete(combinationId);
     res.json({ success: true, message: "Комбинация удалена" });
   } catch (error) {

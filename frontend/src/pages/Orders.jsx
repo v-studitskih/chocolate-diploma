@@ -30,7 +30,7 @@ export default function Orders() {
               paymentMethod: order.paymentMethod,
               date: order.date,
               orderId: order._id,
-              deliveryType: order.address?.type || "delivery", // тип доставки
+              deliveryType: order.address?.type || "delivery",
               pickupAddress:
                 order.address?.type === "pickup"
                   ? order.address?.address
@@ -45,7 +45,6 @@ export default function Orders() {
     }
   };
 
-  // Формирование текста состава шоколада
   const getCompositionText = (customization) => {
     if (!customization) return "";
     const parts = [];
@@ -61,7 +60,6 @@ export default function Orders() {
     return parts.join(" • ");
   };
 
-  // Получение адреса для отображения
   const getAddressText = (item) => {
     if (item.deliveryType === "pickup") {
       return item.pickupAddress || "Самовывоз (г. Москва, ул. Тверская, д. 15)";
@@ -123,7 +121,6 @@ export default function Orders() {
                     </span>
                   </p>
 
-                  {/* Отображение типа получения */}
                   <p className="mt-1">
                     {item.deliveryType === "pickup" ? (
                       <span className="text-blue-600">📦 Самовывоз</span>
@@ -166,9 +163,7 @@ export default function Orders() {
                   onClick={() => {
                     if (item.deliveryType === "pickup") {
                       toast.info(`Самовывоз: ${getAddressText(item)}`);
-                    } // } else {
-                    //   window.location.href = `/track-order/${item.orderId}`;
-                    // }
+                    }
                   }}
                   className="px-4 py-2 text-sm font-medium border rounded-sm hover:bg-gray-50"
                 >

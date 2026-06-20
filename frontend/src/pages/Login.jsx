@@ -10,13 +10,12 @@ export default function Login() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  
+
   const [errors, setErrors] = useState({});
 
   const switchMode = (mode) => {
     setCurrentState(mode);
-    setErrors({}); 
-
+    setErrors({});
     setName("");
     setPassword("");
     setEmail("");
@@ -25,19 +24,19 @@ export default function Login() {
   const validateForm = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+
     if (!email) {
       newErrors.email = "Введите email";
     } else if (!emailRegex.test(email)) {
       newErrors.email = "Введите корректный email";
     }
-    
+
     if (!password) {
       newErrors.password = "Введите пароль";
     } else if (password.length < 6) {
       newErrors.password = "Пароль должен быть минимум 6 символов";
     }
-    
+
     if (currentState === "Sign Up") {
       if (!name) {
         newErrors.name = "Введите имя";
@@ -52,7 +51,7 @@ export default function Login() {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error("Исправьте ошибки в форме");
       return;
@@ -91,28 +90,27 @@ export default function Login() {
     }
   };
 
-  // Очистка ошибки при вводе в поле
   useEffect(() => {
     if (errors.email && email) {
-      setErrors(prev => ({ ...prev, email: null }));
+      setErrors((prev) => ({ ...prev, email: null }));
     }
   }, [email]);
 
   useEffect(() => {
     if (errors.password && password) {
-      setErrors(prev => ({ ...prev, password: null }));
+      setErrors((prev) => ({ ...prev, password: null }));
     }
   }, [password]);
 
   useEffect(() => {
     if (errors.name && name) {
-      setErrors(prev => ({ ...prev, name: null }));
+      setErrors((prev) => ({ ...prev, name: null }));
     }
   }, [name]);
 
   useEffect(() => {
     if (token) {
-      navigate('/');
+      navigate("/");
     }
   }, [token, navigate]);
 
@@ -140,7 +138,9 @@ export default function Login() {
               } focus:outline-none focus:ring-2 focus:ring-black`}
               placeholder="Имя"
             />
-            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+            )}
           </div>
         )}
 
@@ -154,7 +154,9 @@ export default function Login() {
             } focus:outline-none focus:ring-2 focus:ring-black`}
             placeholder="Email"
           />
-          {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+          {errors.email && (
+            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+          )}
         </div>
 
         <div className="w-full">
@@ -167,17 +169,27 @@ export default function Login() {
             } focus:outline-none focus:ring-2 focus:ring-black`}
             placeholder="Пароль (мин. 6 символов)"
           />
-          {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+          {errors.password && (
+            <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+          )}
         </div>
 
         <div className="flex justify-between w-full text-sm mt-[-8px]">
-          <p className="text-gray-500 cursor-pointer hover:text-black">Забыли пароль?</p>
+          <p className="text-gray-500 cursor-pointer hover:text-black">
+            Забыли пароль?
+          </p>
           {currentState === "Login" ? (
-            <p onClick={() => switchMode("Sign Up")} className="text-gray-500 cursor-pointer hover:text-black">
+            <p
+              onClick={() => switchMode("Sign Up")}
+              className="text-gray-500 cursor-pointer hover:text-black"
+            >
               Создать аккаунт
             </p>
           ) : (
-            <p onClick={() => switchMode("Login")} className="text-gray-500 cursor-pointer hover:text-black">
+            <p
+              onClick={() => switchMode("Login")}
+              className="text-gray-500 cursor-pointer hover:text-black"
+            >
               Войти
             </p>
           )}

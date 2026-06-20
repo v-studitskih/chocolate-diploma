@@ -45,7 +45,6 @@ export default function Add({ token }) {
       );
       if (response.data.success) {
         toast.success(response.data.message);
-        // Очистка формы
         setName("");
         setDescription("");
         setPrice("");
@@ -183,7 +182,6 @@ export default function Add({ token }) {
         </div>
       </div>
 
-      {/* Размеры/вес — для форм и основ */}
       {(category === "form" || category === "base") && (
         <div>
           <p className="mb-2">Вес/Размеры</p>
@@ -212,7 +210,6 @@ export default function Add({ token }) {
         </div>
       )}
 
-      {/* Чекбоксы */}
       <div className="flex flex-col gap-2 mt-2">
         <div className="flex gap-2">
           <input

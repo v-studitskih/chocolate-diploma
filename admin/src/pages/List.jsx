@@ -55,8 +55,6 @@ export default function List({ token }) {
   return (
     <>
       <p className="mb-2 text-lg font-medium">Список опций</p>
-
-      {/* Десктопная таблица (visible on md and up) */}
       <div className="hidden md:block">
         <div className="grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center py-2 px-2 border bg-gray-100 text-sm font-medium">
           <b>Изобр.</b>
@@ -94,7 +92,6 @@ export default function List({ token }) {
         ))}
       </div>
 
-      {/* Мобильные карточки (visible on mobile) */}
       <div className="space-y-3 md:hidden">
         {list.map((item, index) => (
           <div key={index} className="p-3 bg-white border rounded-lg shadow-sm">

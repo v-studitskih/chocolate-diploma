@@ -17,7 +17,6 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
-  // Добавление  в корзину
   const addToCart = async (itemId, customization, totalPrice, image) => {
     let cartData = structuredClone(cartItems);
 
@@ -52,7 +51,6 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Получить общее количество товаров в корзине
   const getCartCount = () => {
     let totalCount = 0;
     for (const itemId in cartItems) {
@@ -64,7 +62,6 @@ const ShopContextProvider = (props) => {
     return totalCount;
   };
 
-  // Обновить количество товара
   const updateQuantity = async (itemId, quantity) => {
     let cartData = structuredClone(cartItems);
 
@@ -92,7 +89,6 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Получить общую сумму корзины
   const getCartAmount = () => {
     let totalAmount = 0;
     for (const itemId in cartItems) {
@@ -106,7 +102,6 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   };
 
-  // Получить все опции 
   const getProductsData = async () => {
     try {
       const response = await axios.get(backendUrl + "/api/product/list");
@@ -121,7 +116,6 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Получить популярные комбинации
   const getPopularCombinations = async () => {
     try {
       const response = await axios.get(backendUrl + "/api/combinations/list");
@@ -133,14 +127,11 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  // Получить корзину пользователя
   const getUserCart = async (token) => {
     try {
-      const response = await axios.get(
-        backendUrl + "/api/cart",
-        {},
-        { headers: { token } },
-      );
+      const response = await axios.get(backendUrl + "/api/cart", {
+        headers: { token },
+      });
       if (response.data.success) {
         setCartItems(response.data.cartData);
       }

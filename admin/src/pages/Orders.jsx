@@ -46,7 +46,6 @@ export default function Orders({ token }) {
     }
   };
 
-  // Получение понятного описания состава шоколада
   const getCustomizationText = (customization) => {
     if (!customization) return "";
 

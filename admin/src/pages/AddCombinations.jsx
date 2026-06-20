@@ -10,14 +10,13 @@ export default function AddCombination({ token }) {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(false);
   
-  // Выбранные опции
   const [selectedForm, setSelectedForm] = useState("");
   const [selectedBase, setSelectedBase] = useState("");
   const [selectedFillings, setSelectedFillings] = useState([]);
   const [selectedDecors, setSelectedDecors] = useState([]);
   const [selectedPackaging, setSelectedPackaging] = useState("");
   
-  // Списки опций из БД
+
   const [forms, setForms] = useState([]);
   const [bases, setBases] = useState([]);
   const [fillings, setFillings] = useState([]);
@@ -25,7 +24,6 @@ export default function AddCombination({ token }) {
   const [packagings, setPackagings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Загрузка опций из БД
   const fetchOptions = async () => {
     try {
       const response = await axios.get(backendUrl + "/api/product/list");
@@ -85,7 +83,6 @@ export default function AddCombination({ token }) {
       
       if (response.data.success) {
         toast.success("Комбинация добавлена");
-        // Очистка формы
         setName("");
         setDescription("");
         setPrice("");
@@ -113,40 +110,11 @@ export default function AddCombination({ token }) {
   };
 
   if (loading) {
-    return <div className="py-10 text-center">Загрузка опций...</div>;
+    return <div className="py-10 text-center">Загрузка...</div>;
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col items-start w-full gap-4">
-      <h2 className="mb-4 text-xl font-bold">Добавить популярную комбинацию</h2>
-      
-      {/* Название */}
-      <div className="w-full">
-        <p className="mb-2">Название комбинации</p>
-        <input
-          onChange={(e) => setName(e.target.value)}
-          value={name}
-          className="w-full max-w-[500px] px-3 py-2 border rounded"
-          type="text"
-          placeholder="Например: Романтический вечер"
-          required
-        />
-      </div>
-
-      {/* Описание */}
-      <div className="w-full">
-        <p className="mb-2">Описание</p>
-        <textarea
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          className="w-full max-w-[500px] px-3 py-2 border rounded"
-          placeholder="Краткое описание комбинации..."
-          rows="3"
-          required
-        />
-      </div>
-
-      {/* Изображение */}
       <div>
         <p className="mb-2">Изображение</p>
         <label htmlFor="image">
@@ -164,10 +132,34 @@ export default function AddCombination({ token }) {
           />
         </label>
       </div>
-
-      {/* Цена */}
+      
       <div className="w-full">
-        <p className="mb-2">Цена (в рублях)</p>
+        <p className="mb-2">Название комбинации</p>
+        <input
+          onChange={(e) => setName(e.target.value)}
+          value={name}
+          className="w-full max-w-[500px] px-3 py-2 border rounded"
+          type="text"
+          placeholder="Например: Романтический вечер"
+          required
+        />
+      </div>
+
+      <div className="w-full">
+        <p className="mb-2">Описание</p>
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+          className="w-full max-w-[500px] px-3 py-2 border rounded"
+          placeholder="Краткое описание комбинации..."
+          rows="3"
+          required
+        />
+      </div>
+
+     
+      <div className="w-full">
+        <p className="mb-2">Цена</p>
         <input
           onChange={(e) => setPrice(e.target.value)}
           value={price}
@@ -178,9 +170,8 @@ export default function AddCombination({ token }) {
         />
       </div>
 
-      {/* Форма */}
       <div className="w-full">
-        <p className="mb-2">Форма (обязательно)</p>
+        <p className="mb-2">Форма</p>
         <select
           onChange={(e) => setSelectedForm(e.target.value)}
           value={selectedForm}
@@ -194,9 +185,8 @@ export default function AddCombination({ token }) {
         </select>
       </div>
 
-      {/* Основа */}
       <div className="w-full">
-        <p className="mb-2">Основа (обязательно)</p>
+        <p className="mb-2">Основа</p>
         <select
           onChange={(e) => setSelectedBase(e.target.value)}
           value={selectedBase}
@@ -210,9 +200,8 @@ export default function AddCombination({ token }) {
         </select>
       </div>
 
-      {/* Начинка (множественный выбор) */}
       <div className="w-full">
-        <p className="mb-2">Начинка (можно несколько)</p>
+        <p className="mb-2">Начинка</p>
         <div className="flex flex-wrap gap-3 max-w-[500px]">
           {fillings.map(filling => (
             <label key={filling._id} className="flex items-center gap-1 cursor-pointer">
@@ -227,9 +216,8 @@ export default function AddCombination({ token }) {
         </div>
       </div>
 
-      {/* Декор (множественный выбор) */}
       <div className="w-full">
-        <p className="mb-2">Декор (можно несколько)</p>
+        <p className="mb-2">Декор</p>
         <div className="flex flex-wrap gap-3 max-w-[500px]">
           {decors.map(decor => (
             <label key={decor._id} className="flex items-center gap-1 cursor-pointer">
@@ -244,9 +232,8 @@ export default function AddCombination({ token }) {
         </div>
       </div>
 
-      {/* Упаковка */}
       <div className="w-full">
-        <p className="mb-2">Упаковка (обязательно)</p>
+        <p className="mb-2">Упаковка</p>
         <select
           onChange={(e) => setSelectedPackaging(e.target.value)}
           value={selectedPackaging}

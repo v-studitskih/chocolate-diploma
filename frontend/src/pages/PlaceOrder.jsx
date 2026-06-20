@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("cod");
-  const [deliveryType, setDeliveryType] = useState("delivery"); // delivery или pickup
+  const [deliveryType, setDeliveryType] = useState("delivery");
   const {
     navigate,
     backendUrl,
@@ -18,7 +18,7 @@ export default function PlaceOrder() {
     getCartAmount,
     delivery_fee,
   } = useContext(ShopContext);
-  
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -39,32 +39,35 @@ export default function PlaceOrder() {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    
-    // Проверка наличия товаров в корзине
+
     const itemCount = Object.keys(cartItems).length;
     if (itemCount === 0) {
       toast.error("Корзина пуста");
       return;
     }
-    
-    // При самовывозе проверяем только имя и телефон
+
     if (deliveryType === "pickup") {
       if (!formData.firstName || !formData.phone) {
         toast.error("Заполните имя и телефон для самовывоза");
         return;
       }
     } else {
-      // При доставке проверяем все поля
-      if (!formData.firstName || !formData.lastName || !formData.email || 
-          !formData.street || !formData.city || !formData.phone) {
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.email ||
+        !formData.street ||
+        !formData.city ||
+        !formData.phone
+      ) {
         toast.error("Заполните все поля доставки");
         return;
       }
     }
-    
+
     try {
       let orderItems = [];
-      
+
       for (const itemId in cartItems) {
         const item = cartItems[itemId];
         if (item && item.quantity > 0) {
@@ -73,12 +76,11 @@ export default function PlaceOrder() {
             quantity: item.quantity,
             customization: item.customization || {},
             totalPrice: item.totalPrice,
-            image: item.image || ""
+            image: item.image || "",
           });
         }
       }
-      
-      // Формируем адрес в зависимости от типа доставки
+
       let address;
       if (deliveryType === "pickup") {
         address = {
@@ -86,7 +88,8 @@ export default function PlaceOrder() {
           lastName: formData.lastName || "",
           phone: formData.phone,
           type: "pickup",
-          address: "Самовывоз: г. Москва, ул. Тверская, д. 15 (с 10:00 до 20:00)"
+          address:
+            "Самовывоз: г. Москва, ул. Тверская, д. 15 (с 10:00 до 20:00)",
         };
       } else {
         address = {
@@ -99,13 +102,13 @@ export default function PlaceOrder() {
           zipcode: formData.zipcode || "",
           country: formData.country || "Россия",
           phone: formData.phone,
-          type: "delivery"
+          type: "delivery",
         };
       }
-      
-      // Расчёт суммы с учётом доставки
-      const totalAmount = getCartAmount() + (deliveryType === "delivery" ? delivery_fee : 0);
-      
+
+      const totalAmount =
+        getCartAmount() + (deliveryType === "delivery" ? delivery_fee : 0);
+
       let orderData = {
         address: address,
         items: orderItems,
@@ -119,13 +122,15 @@ export default function PlaceOrder() {
           const response = await axios.post(
             backendUrl + "/api/order/place",
             orderData,
-            { headers: { token } }
+            { headers: { token } },
           );
           if (response.data.success) {
             setCartItems({});
-            toast.success(deliveryType === "pickup" 
-              ? "Заказ оформлен! Ожидайте в пункте самовывоза" 
-              : "Заказ оформлен! Ожидайте доставку");
+            toast.success(
+              deliveryType === "pickup"
+                ? "Заказ оформлен! Ожидайте в пункте самовывоза"
+                : "Заказ оформлен! Ожидайте доставку",
+            );
             navigate("/orders");
           } else {
             toast.error(response.data.message);
@@ -147,203 +152,213 @@ export default function PlaceOrder() {
     if (customization.form?.name) parts.push(customization.form.name);
     if (customization.base?.name) parts.push(customization.base.name);
     if (customization.filling?.length) {
-      parts.push(`нач: ${customization.filling.map(f => f.name).join(", ")}`);
+      parts.push(`нач: ${customization.filling.map((f) => f.name).join(", ")}`);
     }
     if (customization.decor?.length) {
-      parts.push(`дек: ${customization.decor.map(d => d.name).join(", ")}`);
+      parts.push(`дек: ${customization.decor.map((d) => d.name).join(", ")}`);
     }
     if (customization.packaging?.name) parts.push(customization.packaging.name);
     return parts.join(" • ");
   };
 
   return (
-    <form
-      onSubmit={onSubmitHandler}
-      className="flex flex-col justify-between gap-4 pt-5 sm:flex-row sm:pt-14 min-h-[80vh] border-t"
-    >
-      {/* Левая часть - форма */}
-      <div className="flex flex-col w-full gap-4 sm:max-w-[480px]">
-        <div className="my-3 text-xl sm:text-2xl ">
-          <Title text1={"ОФОРМЛЕНИЕ"} text2={"ЗАКАЗА"} />
-        </div>
-        
-        {/* Выбор типа получения */}
-        <div className="flex gap-4 mb-4">
-          <button
-            type="button"
-            onClick={() => setDeliveryType("delivery")}
-            className={`flex-1 py-2 border rounded transition ${
-              deliveryType === "delivery" 
-                ? "border-black bg-black text-white" 
-                : "border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            🚚 ДОСТАВКА
-          </button>
-          <button
-            type="button"
-            onClick={() => setDeliveryType("pickup")}
-            className={`flex-1 py-2 border rounded transition ${
-              deliveryType === "pickup" 
-                ? "border-black bg-black text-white" 
-                : "border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            📦 САМОВЫВОЗ
-          </button>
-        </div>
-        
-        {/* Информация о самовывозе */}
-        {deliveryType === "pickup" && (
-          <div className="p-3 mb-2 text-sm text-blue-700 rounded bg-blue-50">
-            📍 Адрес самовывоза: г. Москва, ул. Тверская, д. 15<br />
-            🕐 Режим работы: ежедневно с 10:00 до 20:00<br />
-            📞 При себе необходимо иметь номер заказа
+    <main id="main-content" className="min-h-screen">
+      <form
+        onSubmit={onSubmitHandler}
+        className="flex flex-col justify-between gap-4 pt-5 sm:flex-row sm:pt-14 min-h-[80vh] border-t"
+      >
+        <div className="flex flex-col w-full gap-4 sm:max-w-[480px]">
+          <div className="my-3 text-xl sm:text-2xl ">
+            <Title text1={"ОФОРМЛЕНИЕ"} text2={"ЗАКАЗА"} />
           </div>
-        )}
-        
-        <div className="flex gap-3">
-          <input
-            required
-            onChange={onChangeHandler}
-            name="firstName"
-            value={formData.firstName}
-            className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-            type="text"
-            placeholder="Имя *"
-          />
-          {deliveryType === "delivery" && (
-            <input
-              required
-              onChange={onChangeHandler}
-              name="lastName"
-              value={formData.lastName}
-              className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-              type="text"
-              placeholder="Фамилия *"
-            />
+
+          <div className="flex gap-4 mb-4">
+            <button
+              type="button"
+              onClick={() => setDeliveryType("delivery")}
+              className={`flex-1 py-2 border rounded transition ${
+                deliveryType === "delivery"
+                  ? "border-black bg-black text-white"
+                  : "border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              🚚 ДОСТАВКА
+            </button>
+            <button
+              type="button"
+              onClick={() => setDeliveryType("pickup")}
+              className={`flex-1 py-2 border rounded transition ${
+                deliveryType === "pickup"
+                  ? "border-black bg-black text-white"
+                  : "border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              📦 САМОВЫВОЗ
+            </button>
+          </div>
+
+          {deliveryType === "pickup" && (
+            <div className="p-3 mb-2 text-sm text-blue-700 rounded bg-blue-50">
+              📍 Адрес самовывоза: г. Москва, ул. Тверская, д. 15
+              <br />
+              🕐 Режим работы: ежедневно с 10:00 до 20:00
+              <br />
+              📞 При себе необходимо иметь номер заказа
+            </div>
           )}
-        </div>
-        
-        {deliveryType === "delivery" && (
-          <>
+
+          <div className="flex gap-3">
             <input
               required
               onChange={onChangeHandler}
-              name="email"
-              value={formData.email}
-              className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-              type="email"
-              placeholder="Email *"
-            />
-            
-            <input
-              required
-              onChange={onChangeHandler}
-              name="street"
-              value={formData.street}
+              name="firstName"
+              value={formData.firstName}
               className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
               type="text"
-              placeholder="Улица, дом, квартира *"
+              placeholder="Имя *"
             />
-            
-            <div className="flex gap-3">
+            {deliveryType === "delivery" && (
               <input
                 required
                 onChange={onChangeHandler}
-                name="city"
-                value={formData.city}
+                name="lastName"
+                value={formData.lastName}
                 className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
                 type="text"
-                placeholder="Город *"
+                placeholder="Фамилия *"
               />
+            )}
+          </div>
+
+          {deliveryType === "delivery" && (
+            <>
               <input
+                required
                 onChange={onChangeHandler}
-                name="state"
-                value={formData.state}
+                name="email"
+                value={formData.email}
                 className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-                type="text"
-                placeholder="Область/Регион"
+                type="email"
+                placeholder="Email *"
               />
-            </div>
-            
-            <div className="flex gap-3">
+
               <input
+                required
                 onChange={onChangeHandler}
-                name="zipcode"
-                value={formData.zipcode}
+                name="street"
+                value={formData.street}
                 className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
                 type="text"
-                placeholder="Индекс"
+                placeholder="Улица, дом, квартира *"
               />
-              <input
-                onChange={onChangeHandler}
-                name="country"
-                value={formData.country}
-                className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-                type="text"
-                placeholder="Страна"
-              />
-            </div>
-          </>
-        )}
-        
-        <input
-          required
-          onChange={onChangeHandler}
-          name="phone"
-          value={formData.phone}
-          className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
-          type="tel"
-          placeholder="Телефон *"
-        />
-      </div>
-      
-      {/* Правая часть - итог и оплата */}
-      <div className="mt-8">
-        <div className="mt-8 min-w-80">
-          <CartTotal deliveryType={deliveryType} />
+
+              <div className="flex gap-3">
+                <input
+                  required
+                  onChange={onChangeHandler}
+                  name="city"
+                  value={formData.city}
+                  className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
+                  type="text"
+                  placeholder="Город *"
+                />
+                <input
+                  onChange={onChangeHandler}
+                  name="state"
+                  value={formData.state}
+                  className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
+                  type="text"
+                  placeholder="Область/Регион"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <input
+                  onChange={onChangeHandler}
+                  name="zipcode"
+                  value={formData.zipcode}
+                  className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
+                  type="text"
+                  placeholder="Индекс"
+                />
+                <input
+                  onChange={onChangeHandler}
+                  name="country"
+                  value={formData.country}
+                  className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
+                  type="text"
+                  placeholder="Страна"
+                />
+              </div>
+            </>
+          )}
+
+          <input
+            required
+            onChange={onChangeHandler}
+            name="phone"
+            value={formData.phone}
+            className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
+            type="tel"
+            placeholder="Телефон *"
+          />
         </div>
 
-        <div className="mt-12">
-          <Title text1={"СПОСОБ"} text2={"ОПЛАТЫ"} />
-          
-          <div className="flex flex-col gap-3 lg:flex-row">
-            <div
-              onClick={() => setMethod("cod")}
-              className={`flex items-center gap-3 p-2 px-3 border rounded cursor-pointer transition ${
-                method === "cod" ? "border-green-500 bg-green-50" : "border-gray-300"
-              }`}
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "cod" ? "bg-green-500" : ""}`}
-              ></p>
-              <p className="mx-2 text-sm font-medium text-gray-600">
-                {deliveryType === "pickup" ? "ОПЛАТА ПРИ ПОЛУЧЕНИИ" : "НАЛИЧНЫМИ ПРИ ПОЛУЧЕНИИ"}
-              </p>
-            </div>
-            
-            <div
-              onClick={() => toast.info("Демо-режим. Для теста используйте оплату при получении")}
-              className="flex items-center gap-3 p-2 px-3 border rounded opacity-50 cursor-pointer"
-            >
-              <p className="min-w-3.5 h-3.5 border rounded-full"></p>
-              <p className="mx-2 text-sm font-medium text-gray-500">
-                БАНКОВСКАЯ КАРТА (СКОРО)
-              </p>
-            </div>
+        <div className="mt-8">
+          <div className="mt-8 min-w-80">
+            <CartTotal deliveryType={deliveryType} />
           </div>
-          
-          <div className="w-full mt-8 text-end">
-            <button
-              type="submit"
-              className="px-8 py-3 text-sm text-white transition bg-black rounded hover:bg-gray-800"
-            >
-              {deliveryType === "pickup" ? "ЗАБРАТЬ САМОВЫВОЗОМ" : "ОФОРМИТЬ ДОСТАВКУ"}
-            </button>
+
+          <div className="mt-12">
+            <Title text1={"СПОСОБ"} text2={"ОПЛАТЫ"} />
+
+            <div className="flex flex-col gap-3 lg:flex-row">
+              <div
+                onClick={() => setMethod("cod")}
+                className={`flex items-center gap-3 p-2 px-3 border rounded cursor-pointer transition ${
+                  method === "cod"
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-300"
+                }`}
+              >
+                <p
+                  className={`min-w-3.5 h-3.5 border rounded-full ${method === "cod" ? "bg-green-500" : ""}`}
+                ></p>
+                <p className="mx-2 text-sm font-medium text-gray-700">
+                  {deliveryType === "pickup"
+                    ? "ОПЛАТА ПРИ ПОЛУЧЕНИИ"
+                    : "НАЛИЧНЫМИ ПРИ ПОЛУЧЕНИИ"}
+                </p>
+              </div>
+
+              <div
+                onClick={() =>
+                  toast.info(
+                    "Демо-режим. Для теста используйте оплату при получении",
+                  )
+                }
+                className="flex items-center gap-3 p-2 px-3 border rounded opacity-50 cursor-pointer"
+              >
+                <p className="min-w-3.5 h-3.5 border rounded-full"></p>
+                <p className="mx-2 text-sm font-medium text-gray-500">
+                  БАНКОВСКАЯ КАРТА (СКОРО)
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full mt-8 text-end">
+              <button
+                type="submit"
+                className="px-8 py-3 text-sm text-white transition bg-black rounded hover:bg-gray-800"
+              >
+                {deliveryType === "pickup"
+                  ? "ЗАБРАТЬ САМОВЫВОЗОМ"
+                  : "ОФОРМИТЬ ДОСТАВКУ"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </main>
   );
 }
