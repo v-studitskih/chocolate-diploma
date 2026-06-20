@@ -187,7 +187,7 @@ export default function Product() {
             работы. Вы можете комбинировать её с другими ингредиентами и
             украшениями в нашем
             <button
-              onClick={() => navigate("/collection")}
+              onClick={() => navigate("/customize")}
               className="ml-1 text-gray-800 hover:underline"
             >
               конструкторе
