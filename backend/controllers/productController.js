@@ -1,4 +1,5 @@
 import productModel from "../models/productModel.js";
+import uploadToYandex from "../middleware/uploadToYandex.js";
 
 const addProduct = async (req, res) => {
   try {
@@ -22,7 +23,11 @@ const addProduct = async (req, res) => {
       (item) => item !== undefined,
     );
 
-    const imagesUrl = images.map((img) => `/uploads/${img.filename}`);
+    const imagesUrl = [];
+    for (const img of images) {
+      const result = await uploadToYandex(img, 'products');
+      imagesUrl.push(result.url);
+    }
 
     const productData = {
       name,
@@ -43,10 +48,10 @@ const addProduct = async (req, res) => {
     res.json({ success: true, message: "Product Added" });
   } catch (error) {
     console.log(error);
-
     res.json({ success: false, message: error.message });
   }
 };
+
 
 const listProducts = async (req, res) => {
   try {
@@ -54,7 +59,6 @@ const listProducts = async (req, res) => {
     res.json({ success: true, products });
   } catch (error) {
     console.log(error);
-
     res.json({ success: false, message: error.message });
   }
 };
@@ -66,7 +70,6 @@ const removeProduct = async (req, res) => {
     res.json({ success: true, message: "Product Removed" });
   } catch (error) {
     console.log(error);
-
     res.json({ success: false, message: error.message });
   }
 };
@@ -78,7 +81,6 @@ const singleProduct = async (req, res) => {
     res.json({ success: true, product });
   } catch (error) {
     console.log(error);
-
     res.json({ success: false, message: error.message });
   }
 };

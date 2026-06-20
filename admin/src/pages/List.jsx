@@ -72,7 +72,7 @@ export default function List({ token }) {
           >
             <img
               className="object-cover w-10 h-10 rounded"
-              src={`http://localhost:4000${item.image[0]}`}
+              src={item.image[0] || "/placeholder.png"}
               alt=""
               onError={(e) => {
                 e.target.src = "/placeholder.png";
@@ -98,7 +98,7 @@ export default function List({ token }) {
             <div className="flex gap-3">
               <img
                 className="object-cover w-16 h-16 rounded"
-                src={`http://localhost:4000${item.image[0]}`}
+                src={item.image[0] || "/placeholder.png"}
                 alt=""
                 onError={(e) => {
                   e.target.src = "/placeholder.png";

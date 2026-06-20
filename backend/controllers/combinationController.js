@@ -1,4 +1,5 @@
 import popularCombinationModel from "../models/popularCombinationModel.js";
+import uploadToYandex from "../middleware/uploadToYandex.js";
 
 const addCombination = async (req, res) => {
   try {
@@ -11,7 +12,8 @@ const addCombination = async (req, res) => {
       });
     }
 
-    const imageUrl = `/uploads/${imageFile.filename}`;
+    const result = await uploadToYandex(imageFile, "combinations");
+    const imageUrl = result.url;
 
     const { name, description, price, options } = req.body;
 

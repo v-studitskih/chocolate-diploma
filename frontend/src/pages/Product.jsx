@@ -94,7 +94,7 @@ export default function Product() {
             {productData.image.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
-                src={`${backendUrl}${item}`}
+                 src={item}
                 key={index}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer border-2 border-transparent hover:border-gray-400 rounded"
                 alt=""
@@ -104,7 +104,7 @@ export default function Product() {
           <div className="w-full sm:w-[80%]">
             <img
               className="w-full h-auto rounded-lg"
-              src={`${backendUrl}${image}`}
+              src={image}
               alt=""
             />
           </div>

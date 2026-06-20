@@ -31,7 +31,7 @@ const OptionCard = ({
     >
       <div className="mb-2 overflow-hidden rounded-md">
         <img
-          src={`${backendUrl}${option.image[0]}`}
+            src={option.image[0]}
           alt={option.name}
           width="185"
           height="185"

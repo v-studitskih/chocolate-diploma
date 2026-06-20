@@ -34,7 +34,7 @@ export default function Combinations() {
           >
             <div className="overflow-hidden bg-gray-100 rounded-lg">
               <img
-                src={`${backendUrl}${item.image}`}
+                src={item.image}
                 alt={item.name}
                 width={"240px"}
                 height={"240px"}
