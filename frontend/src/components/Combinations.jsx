@@ -12,6 +12,11 @@ export default function Combinations() {
     setLatestCombinations(popularCombinations.slice(0, 5));
   }, [popularCombinations]);
 
+  // Функция перехода на страницу комбинации
+  const handleCombinationClick = (combinationId) => {
+    navigate(`/combination/${combinationId}`);
+  };
+
   if (latestCombinations.length === 0) {
     return null;
   }
@@ -30,7 +35,7 @@ export default function Combinations() {
           <div
             key={index}
             className="cursor-pointer group"
-            onClick={() => applyCombination(item._id)}
+            onClick={() => handleCombinationClick(item._id)}
           >
             <div className="overflow-hidden bg-gray-100 rounded-lg">
               <img
